@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TaskFlow</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      font-family: sans-serif;
+      background-color: #f9fafb;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 28rem;
+      margin: 0 auto;
+      padding: 2rem 1rem;
+      min-height: 100vh;
+      background-color: #f9fafb;
+    }
+    header {
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+    header h1 {
+      font-size: 1.875rem;
+      font-weight: bold;
+      color: #1f2937;
+      margin-bottom: 0.5rem;
+    }
+    header p {
+      color: #4b5563;
+    }
+    .progress-container {
+      margin-bottom: 1.5rem;
+    }
+    .progress-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.875rem;
+      margin-bottom: 0.5rem;
+    }
+    .progress-header span:first-child {
+      font-weight: 500;
+      color: #374151;
+    }
+    .progress-header span:last-child {
+      font-weight: bold;
+      color: #10b981;
+    }
+    .progress-bar-background {
+      height: 6px;
+      border-radius: 9999px;
+      background-color: #e5e7eb;
+    }
+    .progress-bar-fill {
+      height: 6px;
+      border-radius: 9999px;
+      background-color: #10b981;
+      transition: width 0.3s ease-in-out;
+    }
+    .form-container {
+      margin-bottom: 1.5rem;
+      background-color: #ffffff;
+      border-radius: 0.5rem;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+      overflow: hidden;
+    }
+    #taskForm {
+      display: flex;
+      align-items: center;
+      padding: 1rem;
+    }
+    #taskTitle {
+      flex-grow: 1;
+      padding: 0.75rem 1rem;
+      background-color: #f9fafb;
+      border: none;
+      border-radius: 0.5rem;
+      transition: 0.3s;
+    }
+    #taskTitle:focus {
+      background-color: #ffffff;
+      outline: none;
+      box-shadow: 0 0 0 3px #86efac;
+    }
+    #taskForm button {
+      margin-left: 0.75rem;
+      padding: 0.75rem;
+      background-color: #10b981;
+      color: white;
+      border: none;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    #taskForm button:hover {
+      background-color: #059669;
+    }
+    .filters {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 1rem;
+      padding: 0 5rem;
+      font-size: 0.875rem;
+    }
+    .filters button {
+      padding: 0.25rem 0.75rem;
+      background-color: #f3f4f6;
+      color: #374151;
+      border: none;
+      border-radius: 0.5rem;
+      cursor: pointer;
+    }
+    .taskList {
+      background-color: #ffffff;
+      border-radius: 0.5rem;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+      overflow: hidden;
+    }
+    .empty-state {
+      padding: 2rem;
+      text-align: center;
+      color: #6b7280;
+    }
+    .empty-state i {
+      font-size: 2rem;
+      color: #d1d5db;
+      margin-bottom: 0.75rem;
+    }
+    .empty-state h3 {
+      font-size: 1.125rem;
+      font-weight: 500;
+    }
+    .actions {
+      display: flex;
+      justify-content: space-between;
+      gap: 2rem;
+      margin: 2rem 0 2rem;
+      font-size: 0.875rem;
+    }
+    .actions button {
+      padding: 0.5rem 1rem;
+      color: white;
+      border: none;
+      border-radius: 0.5rem;
+      cursor: pointer;
+    }
+    #btnConclude {
+      background-color: #10b981;
+    }
+    #btnConclude:hover {
+      background-color: #059669;
+    }
+    #btnDeleteSelected {
+      background-color: #ef4444;
+    }
+    #btnDeleteSelected:hover {
+      background-color: #dc2626;
+    }
+    #confirm-popup {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 50;
+    }
+    #confirm-popup.show {
+      display: flex;
+    }
+    .popup-box {
+      background-color: white;
+      border-radius: 0.5rem;
+      max-width: 24rem;
+      width: 90%;
+      padding: 1.5rem;
+    }
+    .popup-box h3 {
+      font-size: 1.125rem;
+      font-weight: bold;
+      color: #1f2937;
+      margin-bottom: 1rem;
+    }
+    .popup-box p {
+      color: #4b5563;
+      margin-bottom: 1.5rem;
+    }
+    .popup-actions {
+      display: flex;
+      justify-content: flex-end;
+    }
+    .popup-actions button {
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 0.5rem;
+      cursor: pointer;
+    }
+    #cancel-delete {
+      color: #4b5563;
+      margin-right: 0.75rem;
+    }
+    #cancel-delete:hover {
+      color: #1f2937;
+    }
+    #confirm-delete {
+      background-color: #ef4444;
+      color: white;
+    }
+    #confirm-delete:hover {
+      background-color: #dc2626;
+    }
+  </style>
+  <script src="script.js"></script>
+</head>
+<body>
+  <div class="container">
+    <!-- Cabeçalho -->
+    <header>
+      <h1>Minhas Tarefas</h1>
+      <p>Organize seu dia de forma simples</p>
+    </header>
+
+    <!-- Barra de progresso -->
+    <div class="progress-container">
+      <div class="progress-header">
+        <span>Progresso</span>
+        <span id="progress-percent">0%</span>
+      </div>
+      <div class="progress-bar-background">
+        <div id="progress-bar" class="progress-bar-fill" style="width: 0%"></div>
+      </div>
+    </div>
+
+    <!-- Formulário -->
+    <div class="form-container">
+      <form id="taskForm">
+        <input id="taskTitle" type="text" placeholder="Adicionar nova tarefa..." required autocomplete="off" />
+        <button type="submit"><i class="fas fa-plus"></i></button>
+      </form>
+    </div>
+
+    <!-- Filtros -->
+    <div class="filters">
+      <button id="btnPending">Pendentes</button>
+      <button id="btnCompleted">Concluídas</button>
+    </div>
+
+    <!-- Lista -->
+    <div id="taskList" class="taskList">
+      <div id="empty-state" class="empty-state">
+        <i class="fas fa-tasks"></i>
+        <h3>Nenhuma tarefa adicionada</h3>
+        <p>Adicione tarefas para começar</p>
+      </div>
+    </div>
+
+    <!-- Ações -->
+    <div class="actions">
+      <button id="btnConclude">Concluir selecionadas</button>
+      <button id="btnDeleteSelected">Excluir selecionadas</button>
+    </div>
+
+    <!-- Popup -->
+    <div id="confirm-popup">
+      <div class="popup-box">
+        <h3>Remover tarefa?</h3>
+        <p>Esta ação não pode ser desfeita. A tarefa será permanentemente removida.</p>
+        <div class="popup-actions">
+          <button id="cancel-delete">Cancelar</button>
+          <button id="confirm-delete">Remover</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
