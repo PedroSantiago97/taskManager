@@ -1,4 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
+  const API_URL = window.API_URL;
+
   const taskForm = document.getElementById('taskForm');
   const taskInput = document.getElementById('taskTitle');
   const taskList = document.getElementById('taskList');
@@ -13,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   async function fetchTasks() {
     try {
-      const response = await fetch('http://localhost:8080/tasks');
+      const response = await fetch(`https://apifetchs753951.xyz/tasks`);
       tasks = await response.json();
       renderTasks();
     } catch (error) {
@@ -46,10 +48,17 @@ document.addEventListener('DOMContentLoaded', () => {
       const div = document.createElement('div');
       div.className = `task-item ${task.status ? 'completed' : ''}`;
       div.innerHTML = `
-        <div class="task-line">
+        <div class="task-item">
           <label class="task-label">
-            <input type="checkbox" class="task-checkbox" data-id="${task.id}" ${task.status ? 'checked' : ''}>
-            <span class="${task.status ? 'done' : ''}">${task.title}</span>
+            <input 
+              type="checkbox" 
+              class="task-checkbox" 
+              data-id="${task.id}" 
+              ${task.status ? 'checked disabled' : (selectedTasks.has(task.id) ? 'checked' : '')}
+            />
+            <span class="task-title ${task.status ? 'completed' : ''}">
+              ${task.title}
+            </span>
           </label>
         </div>
       `;
@@ -66,7 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     try {
-      const res = await fetch('http://localhost:8080/tasks', {
+      const res = await fetch(`https://apifetchs753951.xyz/tasks`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ title, status: false })
@@ -104,7 +113,7 @@ document.addEventListener('DOMContentLoaded', () => {
   btnConclude.addEventListener('click', async () => {
     try {
       for (const id of selectedTasks) {
-        await fetch('http://localhost:8080/tasks', {
+        await fetch(`https://apifetchs753951.xyz/tasks`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ id: id, status: true })
@@ -145,7 +154,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       for (const id of selectedTasks) {
-        await fetch(`http://localhost:8080/tasks/${id}`, {
+        await fetch(`$https://apifetchs753951.xyz/tasks/${id}`, {
           method: 'DELETE'
         });
       }
@@ -176,3 +185,4 @@ document.addEventListener('DOMContentLoaded', () => {
 
   fetchTasks();
 });
+
